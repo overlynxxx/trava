@@ -17,6 +17,18 @@ const BnovoClient = {
     return response.json();
   },
 
+  async getPrices({ checkIn, checkOut, roomType }) {
+    const params = new URLSearchParams({ checkIn, checkOut, roomType });
+    const response = await fetch(`${this.baseURL}/prices?${params.toString()}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    return response.json();
+  },
+
   async createBooking(bookingData) {
     const response = await fetch(`${this.baseURL}/booking`, {
       method: 'POST',

@@ -48,19 +48,17 @@ function parsePhone(raw) {
   return raw.replace(/\D/g, '').replace(/^8/, '7');
 }
 
-// ===== Calendar =====
-function Calendar({ checkIn, checkOut, onSelect }) {
+// ===== Calendar (with Bnovo prices) =====
+function Calendar({ checkIn, checkOut, onSelect, prices = [] }) {
   const today = new Date(); today.setHours(0,0,0,0);
   const [view, setView] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
-  const disabled = useMemo(() => {
-    const set = new Set();
-    const offsets = [3, 4, 12, 13, 14, 22];
-    for (const o of offsets) {
-      const d = new Date(today); d.setDate(d.getDate() + o);
-      set.add(d.toDateString());
+  const priceMap = useMemo(() => {
+    const map = {};
+    for (const p of prices) {
+      if (p.date) map[p.date] = p;
     }
-    return set;
-  }, []);
+    return map;
+  }, [prices]);
 
   const monthDays = useMemo(() => {
     const first = new Date(view.getFullYear(), view.getMonth(), 1);
@@ -94,8 +92,11 @@ function Calendar({ checkIn, checkOut, onSelect }) {
         {DOW_RU.map((d) => <div key={d} className="dow">{d}</div>)}
         {monthDays.map((d, i) => {
           if (!d) return <div key={i} className="day muted"></div>;
+          const iso = fmtDateISO(d);
           const isPast = d < today;
-          const isDisabled = disabled.has(d.toDateString()) || isPast;
+          const priceData = priceMap[iso];
+          const isUnavailable = priceData && priceData.available === false;
+          const isDisabled = isPast || isUnavailable;
           const isStart = sameDay(d, checkIn);
           const isEnd = sameDay(d, checkOut);
           const inRange = checkIn && checkOut && d > checkIn && d < checkOut;
@@ -106,13 +107,20 @@ function Calendar({ checkIn, checkOut, onSelect }) {
           if (isStart) cls.push("range-start");
           if (isEnd) cls.push("range-end");
           if (isToday) cls.push("today");
+          if (priceData?.isWeekend) cls.push("weekend");
           return (
             <div
               key={i}
               className={cls.join(" ")}
               onClick={(e) => { e.stopPropagation(); if (!isDisabled) handle(d); }}
             >
-              {d.getDate()}
+              <div className="day-num">{d.getDate()}</div>
+              {priceData && !isDisabled && (
+                <div className="day-price">{priceData.price?.toLocaleString('ru')}₽</div>
+              )}
+              {isUnavailable && (
+                <div className="day-cross">—</div>
+              )}
             </div>
           );
         })}
@@ -235,6 +243,7 @@ function BookingWidget({ variant = "hero" }) {
   const [errorMsg, setErrorMsg] = useState("");
   const [bookingResult, setBookingResult] = useState(null);
   const [errors, setErrors] = useState({});
+  const [prices, setPrices] = useState([]);
   const ref = useRef(null);
 
   const totalGuests = adults + kids;
@@ -275,6 +284,26 @@ function BookingWidget({ variant = "hero" }) {
     setCheckIn(ci); setCheckOut(co);
     if (ci && co) setOpen(null);
   };
+
+  // Load prices from Bnovo when type or dates change
+  useEffect(() => {
+    if (!type) return;
+    let cancelled = false;
+    async function load() {
+      try {
+        const today = new Date(); today.setHours(0,0,0,0);
+        const checkInStr = checkIn ? fmtDateISO(checkIn) : fmtDateISO(today);
+        const future = new Date(today); future.setMonth(future.getMonth() + 3);
+        const checkOutStr = checkOut ? fmtDateISO(checkOut) : fmtDateISO(future);
+        const data = await BnovoClient.getPrices({ checkIn: checkInStr, checkOut: checkOutStr, roomType: type });
+        if (!cancelled) setPrices(data.prices || []);
+      } catch (err) {
+        console.error('Failed to load prices:', err);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [type, checkIn, checkOut]);
 
   const validate = () => {
     const errs = {};
@@ -461,7 +490,7 @@ function BookingWidget({ variant = "hero" }) {
           {errors.dates && <div style={{ fontSize: 11, color: "var(--terra-600)", marginTop: 2 }}>{errors.dates}</div>}
           {open === "dates" && (
             <div className="booking-popover" onClick={(e) => e.stopPropagation()} style={{ minWidth: 360 }}>
-              <Calendar checkIn={checkIn} checkOut={checkOut} onSelect={onSelectDates} />
+              <Calendar checkIn={checkIn} checkOut={checkOut} onSelect={onSelectDates} prices={prices} />
             </div>
           )}
         </div>

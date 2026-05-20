@@ -129,6 +129,76 @@ app.post('/api/bnovo/availability', asyncHandler(async (req, res) => {
 }));
 
 /**
+ * GET /api/bnovo/prices
+ * Получение цен на номера за период (для календаря)
+ */
+app.get('/api/bnovo/prices', asyncHandler(async (req, res) => {
+  const { checkIn, checkOut, roomType } = req.query;
+
+  if (!checkIn || !checkOut) {
+    return res.status(400).json({ error: 'Необходимо указать даты заезда и выезда' });
+  }
+
+  const roomId = CONFIG.bnovo.roomIds[roomType] || CONFIG.bnovo.roomIds['4p'];
+
+  try {
+    // Реальный запрос к Bnovo API (замените на актуальный endpoint при наличии документации)
+    const response = await bnovoClient.get('/prices', {
+      params: {
+        property_id: CONFIG.bnovo.propertyId,
+        room_id: roomId,
+        check_in: checkIn,
+        check_out: checkOut,
+      }
+    });
+
+    // Если Bnovo возвращает массив цен — пробрасываем
+    const prices = response.data.data?.prices || response.data.data || [];
+
+    res.json({
+      prices,
+      roomId,
+      roomType,
+      checkIn,
+      checkOut,
+    });
+  } catch (err) {
+    console.error('Bnovo prices error:', err.response?.data || err.message);
+
+    // Mock-данные для разработки
+    const prices = [];
+    let current = new Date(checkIn);
+    const end = new Date(checkOut);
+    const dayMs = 24 * 60 * 60 * 1000;
+
+    while (current < end) {
+      const dateStr = current.toISOString().split('T')[0];
+      const dayOfWeek = current.getDay();
+      const isWeekend = dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0;
+      const basePrice = roomType === '8p' ? 12000 : 5500;
+      const price = isWeekend ? Math.round(basePrice * 1.25) : basePrice;
+
+      prices.push({
+        date: dateStr,
+        price,
+        currency: 'RUB',
+        available: Math.random() > 0.15,
+        isWeekend,
+      });
+      current = new Date(current.getTime() + dayMs);
+    }
+
+    res.json({
+      prices,
+      roomId,
+      roomType,
+      _mock: true,
+      note: 'Подключите реальный API-ключ Bnovo для живых цен',
+    });
+  }
+}));
+
+/**
  * POST /api/bnovo/booking
  * Создание брони в Bnovo
  */

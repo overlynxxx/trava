@@ -646,6 +646,12 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 .cal-grid .day.range-end { background: var(--moss-700); color: var(--paper); border-radius: 0 8px 8px 0; }
 .cal-grid .day.range-start.range-end { border-radius: 8px; }
 .cal-grid .day.today { font-weight: 600; outline: 1px dashed var(--moss-700); outline-offset: -3px; }
+.cal-grid .day.weekend { color: var(--terra-700); }
+.cal-grid .day .day-num { font-size: 13px; line-height: 1; }
+.cal-grid .day .day-price { font-size: 9px; font-family: var(--font-mono); color: var(--bark-500); margin-top: 2px; line-height: 1; }
+.cal-grid .day .day-cross { font-size: 12px; color: var(--terra-600); margin-top: 2px; }
+.cal-grid .day.range-start .day-price,
+.cal-grid .day.range-end .day-price { color: var(--paper); opacity: 0.85; }
 
 /* Guests popover */
 .guest-row {
