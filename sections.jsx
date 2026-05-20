@@ -222,18 +222,28 @@ const FAQ_DATA = [
 // ============== HEADER ==============
 function Header({ lang, setLang, season, setSeason, T }) {
   const [scrolled, setScrolled] = useStateS(false);
+  const [mobileOpen, setMobileOpen] = useStateS(false);
+
   useEffectS(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffectS(() => {
+    const onResize = () => { if (window.innerWidth > 980) setMobileOpen(false); };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   return (
+    <>
     <nav className={`nav ${scrolled ? "is-scrolled" : ""}`} style={{ color: scrolled ? "var(--bark-900)" : "var(--paper)" }}>
       <a href="#top" className="nav-logo">
         <span className="leaf"></span>
         TRAVA
       </a>
-      <div className="nav-links">
+      <div className={`nav-links ${mobileOpen ? "mobile-open" : ""}`} onClick={() => setMobileOpen(false)}>
         <a href="#cottages">{T.nav.cottages}</a>
         <a href="#activities">{T.nav.activities}</a>
         <a href="#events">{T.nav.events}</a>
@@ -242,32 +252,23 @@ function Header({ lang, setLang, season, setSeason, T }) {
       </div>
       <div className="nav-right">
         <div className="season-toggle season-toggle-nav" role="tablist" aria-label="Сезон">
-          <button
-            role="tab"
-            aria-selected={season === "summer"}
-            className={season === "summer" ? "active" : ""}
-            onClick={() => setSeason("summer")}
-          >🌿 Лето</button>
-          <button
-            role="tab"
-            aria-selected={season === "winter"}
-            className={season === "winter" ? "active" : ""}
-            onClick={() => setSeason("winter")}
-          >❄ Зима</button>
+          <button role="tab" aria-selected={season === "summer"} className={season === "summer" ? "active" : ""} onClick={() => setSeason("summer")}>🌿 Лето</button>
+          <button role="tab" aria-selected={season === "winter"} className={season === "winter" ? "active" : ""} onClick={() => setSeason("winter")}>❄ Зима</button>
         </div>
         <div className="lang-toggle">
           <button className={lang === "ru" ? "active" : ""} onClick={() => setLang("ru")}>RU</button>
           <span style={{ opacity: 0.4 }}>/</span>
           <button className={lang === "en" ? "active" : ""} onClick={() => setLang("en")}>EN</button>
         </div>
-        <a href="#booking" className="btn btn-terra nav-cta-btn">
-          {T.cta_book}
-        </a>
-        <button className="nav-burger" aria-label="Menu">
+        <a href="#booking" className="btn btn-terra nav-cta-btn">{T.cta_book}</a>
+        <button className="nav-burger" aria-label="Menu" aria-expanded={mobileOpen} onClick={() => setMobileOpen(v => !v)}>
           <span></span><span></span><span></span>
         </button>
       </div>
     </nav>
+    {/* Mobile overlay */}
+    {mobileOpen && <div className="nav-overlay" onClick={() => setMobileOpen(false)} />}
+    </>
   );
 }
 
