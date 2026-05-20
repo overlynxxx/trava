@@ -91,10 +91,10 @@ const COTTAGES_DATA = [
     priceWeek: "5 000–7 000 ₽",
     priceWeekend: "7 000–8 000 ₽",
     photos: [
-      "media/kott1_18_10.jpg",
+      "media/img_f1ee85d2fa05.jpg",
       "media/kottedj_dlya_4.jpg",
-      "media/42-7.jpg",
-      "media/banya_2018_13.jpg",
+      "media/img_ac03a844ab92.jpg",
+      "media/img_59d224fea61f.jpg",
       "media/velosiped3.jpg",
     ],
     feats: ["1 двуспальная + 2 односпальные", "До 5 доп. мест", "Кухня · индукция · холодильник", "Душевая кабина · фен", "Тёплый пол · Smart TV", "Терраса · вид на лес"],
@@ -108,10 +108,10 @@ const COTTAGES_DATA = [
     priceWeek: "по запросу",
     priceWeekend: "по запросу",
     photos: [
-      "media/78-7.jpg",
+      "media/img_93a812c20ff1.jpg",
       "media/kott_8_pers.jpg",
+      "media/img_f1ee85d2fa05.jpg",
       "media/432-7.jpg",
-      "media/banya_2018_4.jpg",
     ],
     feats: ["2 спальни + гостиная", "До 10 человек", "Полная кухня", "2 санузла", "Терраса · мангал рядом", "Подходит для компании"],
     included: "Бельё, полотенца, чай/кофе. Уточняйте наличие по WhatsApp.",
@@ -160,7 +160,7 @@ function CottageCarousel({ photos, alt }) {
 const ACTIVITIES = {
   summer: {
     label: "Лето",
-    photo: "media/42-7.jpg",
+    photo: "media/img_7e9bde04f52a.jpg",
     items: [
       { name: "Бассейн", price: "летний сезон, бесплатно" },
       { name: "Прокат техники", price: "мотоциклы и квадроциклы" },
@@ -172,7 +172,7 @@ const ACTIVITIES = {
   },
   winter: {
     label: "Зима",
-    photo: "media/34-7.jpg",
+    photo: "media/img_8ad3beb8f4cd.jpg",
     items: [
       { name: "Красное озеро · 15 мин", price: "трансфер по запросу" },
       { name: "Золотая долина · 25 мин", price: "трансфер по запросу" },
@@ -183,7 +183,7 @@ const ACTIVITIES = {
   },
   always: {
     label: "Круглый год",
-    photo: "media/zoo_main.jpg",
+    photo: "media/velosiped3.jpg",
     items: [
       { name: "Баня × 2 + 2 джакузи на улице", price: "от 4 500 ₽/3 ч" },
       { name: "Мини-зоопарк", price: "бесплатно для гостей" },
@@ -430,7 +430,7 @@ function HeroIllustration() {
 }
 
 function Hero({ T, heroStyle, season, setSeason, BookingWidget }) {
-  const heroPhoto = season === "winter" ? "media/banya_2018_4.jpg" : "media/topimage.jpg";
+  const heroPhoto = season === "winter" ? "media/img_885226d041fe.jpg" : "media/topimage.jpg";
   return (
     <section className="hero" id="top" data-hero-style={heroStyle} data-season={season}>
       <div className="hero-bg"></div>
@@ -610,7 +610,7 @@ function Cottages({ T }) {
 
 // ============== BANYA ==============
 function Banya({ T, season = "summer" }) {
-  const photo = season === "winter" ? "media/banya_2018_2.jpg" : "media/banya_2018_10.jpg";
+  const photo = season === "winter" ? "media/img_885226d041fe.jpg" : "media/banya_2018_10.jpg";
   return (
     <section className="section" id="banya" style={{ background: "var(--cream)" }}>
       <div className="container">
@@ -845,22 +845,22 @@ function Events({ T }) {
 // ============== GALLERY ==============
 function Gallery({ T, season = "summer" }) {
   const summerSlots = [
-    { id: "g1", cls: "g g1", src: "media/topimage.jpg", alt: "Коттеджи летом" },
-    { id: "g2", cls: "g g2", src: "media/velosiped3.jpg", alt: "Велосипеды у коттеджа" },
-    { id: "g3", cls: "g g3", src: "media/42-7.jpg", alt: "Гамак в лесу" },
-    { id: "g4", cls: "g g4", src: "media/kottedj_dlya_4.jpg", alt: "Интерьер коттеджа" },
-    { id: "g5", cls: "g g5", src: "media/kott1_18_10.jpg", alt: "Коттедж с террасой" },
+    { id: "g1", cls: "g g1", src: "media/img_f1ee85d2fa05.jpg", alt: "Коттеджи летом" },
+    { id: "g2", cls: "g g2", src: "media/img_93a812c20ff1.jpg", alt: "Терраса с видом на лес" },
+    { id: "g3", cls: "g g3", src: "media/img_7e9bde04f52a.jpg", alt: "Территория Травы" },
+    { id: "g4", cls: "g g4", src: "media/img_ac03a844ab92.jpg", alt: "Коттедж в сосновом лесу" },
+    { id: "g5", cls: "g g5", src: "media/kottedj_dlya_4.jpg", alt: "Интерьер коттеджа" },
     { id: "g6", cls: "g g6", src: "media/banya5.jpg", alt: "Банные аксессуары" },
     { id: "g7", cls: "g g7", src: "media/66-7.jpg", alt: "Беседка в лесу" },
   ];
   const winterSlots = [
-    { id: "g1", cls: "g g1", src: "media/banya_2018_2.jpg", alt: "Джакузи на снегу" },
-    { id: "g2", cls: "g g2", src: "media/34-7.jpg", alt: "Площадка в снегу" },
-    { id: "g3", cls: "g g3", src: "media/banya_2018_4.jpg", alt: "Коттедж зимой" },
-    { id: "g4", cls: "g g4", src: "media/banya_2018_13.jpg", alt: "Зимняя терраса" },
-    { id: "g5", cls: "g g5", src: "media/432-7.jpg", alt: "Зимний коттедж" },
-    { id: "g6", cls: "g g6", src: "media/banya_2018_10.jpg", alt: "Парная" },
-    { id: "g7", cls: "g g7", src: "media/110-7.jpg", alt: "Зимний хоровод" },
+    { id: "g1", cls: "g g1", src: "media/img_885226d041fe.jpg", alt: "Зимние коттеджи с баней" },
+    { id: "g2", cls: "g g2", src: "media/img_68e20452a4dd.jpg", alt: "Баня с купелью в снегу" },
+    { id: "g3", cls: "g g3", src: "media/img_f3b01adb8c29.jpg", alt: "Зимняя купель" },
+    { id: "g4", cls: "g g4", src: "media/img_a7adabf991b6.jpg", alt: "Коттёж зимой" },
+    { id: "g5", cls: "g g5", src: "media/img_8ad3beb8f4cd.jpg", alt: "Домик в зимнем лесу" },
+    { id: "g6", cls: "g g6", src: "media/img_285e82cfbc7e.jpg", alt: "Территория зимой" },
+    { id: "g7", cls: "g g7", src: "media/img_59d224fea61f.jpg", alt: "Зимний закат" },
   ];
   const slots = season === "winter" ? winterSlots : summerSlots;
   const lede = season === "winter"
