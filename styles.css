@@ -1419,7 +1419,10 @@ image-slot {
 
   /* Nav mobile slide-in */
   .nav {
-    padding-top: 14px;
+    position: fixed;
+    inset: 0 0 auto 0;
+    background: var(--paper);
+    border-bottom-color: var(--line);
     padding-top: calc(14px + env(safe-area-inset-top));
     padding-bottom: 14px;
     padding-left: var(--pad-x);
